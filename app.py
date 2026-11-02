@@ -127,7 +127,7 @@ if selected_files:
                 try:
                     # Uses production gemini-2.0-flash with fallback
                     try:
-                        model_name = "gemini-2.0-flash"
+                        model_name = "gemini-2.5-flash"
                         response = client.models.generate_content(
                             model=model_name,
                             contents=[
@@ -256,7 +256,7 @@ if not df.empty:
                     Provide clear, data-driven coaching insights with specific dates and comparisons.
                     """
                     chat_resp = client.models.generate_content(
-                        model="gemini-2.0-flash",
+                        model="gemini-2.5-flash",
                         contents=system_ctx
                     )
                     reply = chat_resp.text
