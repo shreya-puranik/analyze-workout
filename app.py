@@ -125,7 +125,7 @@ if selected_files:
                 )
                 try:
                     response = client.models.generate_content(
-                        model="gemini-2.0-flash",
+                        model="gemini-3.8-flash",
                         contents=[
                             types.Part.from_bytes(data=raw_bytes, mime_type="image/jpeg"),
                             prompt
@@ -240,7 +240,7 @@ if not df.empty:
                     Provide clear, data-driven coaching insights with specific dates and comparisons.
                     """
                     chat_resp = client.models.generate_content(
-                        model="gemini-2.0-flash",
+                        model="gemini-3.8-flash",
                         contents=system_ctx
                     )
                     reply = chat_resp.text
