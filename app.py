@@ -123,35 +123,19 @@ if selected_files:
                     "Extract duration_min, avg_watts, avg_cadence, total_kj, calories, and distance_miles. "
                     "If obscured, unclear, or not a workout console, set is_valid_spin_screen=False."
                 )
-
                 try:
-                    # Uses production gemini-2.0-flash with fallback
-                    try:
-                        model_name = "gemini-2.5-flash"
-                        response = client.models.generate_content(
-                            model=model_name,
-                            contents=[
-                                types.Part.from_bytes(data=raw_bytes, mime_type="image/jpeg"),
-                                prompt
-                            ],
-                            config=types.GenerateContentConfig(
-                                response_mime_type="application/json",
-                                response_schema=SpinMetrics,
-                            )
+                    response = client.models.generate_content(
+                        model="gemini-2.0-flash",
+                        contents=[
+                            types.Part.from_bytes(data=raw_bytes, mime_type="image/jpeg"),
+                            prompt
+                        ],
+                        config=types.GenerateContentConfig(
+                            response_mime_type="application/json",
+                            response_schema=SpinMetrics,
                         )
-                    except Exception:
-                        model_name = "gemini-1.5-flash"
-                        response = client.models.generate_content(
-                            model=model_name,
-                            contents=[
-                                types.Part.from_bytes(data=raw_bytes, mime_type="image/jpeg"),
-                                prompt
-                            ],
-                            config=types.GenerateContentConfig(
-                                response_mime_type="application/json",
-                                response_schema=SpinMetrics,
-                            )
-                        )
+                    )
+                
 
                     metrics = SpinMetrics.model_validate_json(response.text)
 
@@ -256,7 +240,7 @@ if not df.empty:
                     Provide clear, data-driven coaching insights with specific dates and comparisons.
                     """
                     chat_resp = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-2.0-flash",
                         contents=system_ctx
                     )
                     reply = chat_resp.text
