@@ -106,3 +106,22 @@ if uploaded_files and st.button("Process & Log Rides", use_container_width=True)
                             response_mime_type="application/json",
                             response_schema=SpinMetrics,
                         )
+                    )
+                    metrics = SpinMetrics.model_validate_json(response.text)
+
+                    cursor.execute("""
+                    INSERT INTO workouts (workout_date, duration_min, avg_watts, avg_cadence, total_kj, calories, distance_miles)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        captured_date,
+                        metrics.duration_min,
+                        metrics.avg_watts,
+                        metrics.avg_cadence,
+                        metrics.total_kj,
+                        metrics.calories,
+                        metrics.distance_miles
+                    ))
+                    conn.commit()
+                    st.success(f"Logged ride ({captured_date}): {metrics.avg_watts or 0}W, {metrics.avg_cadence or 0} RPM, {metrics.duration_min} min")
+                except Exception as e:
+                    st.error(f"Error processing {file.name}: {e}")
